@@ -24,7 +24,14 @@
     "express": "^4.18.2",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
-    "zone.js": "~0.14.10"
+    "zone.js": "~0.14.10",
+    "bootstrap": "^4.6.0",
+    "font-awesome": "^4.7.0",
+    "@babylonjs/gui": "^7.34.2",
+    "@babylonjs/loaders": "^7.34.3",
+    "babylonjs": "^7.34.2",
+    "babylonjs-gui": "^7.34.2",
+    "babylonjs-loaders": "^7.34.2"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^18.2.12",
@@ -39,6 +46,8 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
-    "typescript": "~5.5.2"
+    "typescript": "~5.5.2",
+    "@babylonjs/core": "^7.34.2",
+    "@types/babylonjs": "^2.4.5"
   }
 }
