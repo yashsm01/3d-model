@@ -1,6 +1,12 @@
 <div class="container-fluid">
     <canvas id="renderCanvas"></canvas>
   
+    <!-- camara possion add -->
+    <div class="camera-position-container">
+      <button class="settings-btn" (click)="storeCurrentCameraPositionAndAngle()">
+        <i class="fas fa-camera"></i>
+      </button>
+    </div>
     <!-- Settings Button -->
     <div class="settings-container">
       <button class="settings-btn" (click)="clickSettings();">

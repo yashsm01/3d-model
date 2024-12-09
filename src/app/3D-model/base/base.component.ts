@@ -1,4 +1,5 @@
-import { Component, OnInit, NgZone, AfterViewInit } from '@angular/core';
+import { Component, OnInit, NgZone, AfterViewInit, Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import * as BABYLON from '@babylonjs/core';
 import "@babylonjs/loaders";
 import * as GUI from '@babylonjs/gui/2D';
@@ -49,7 +50,7 @@ export class BaseComponent  implements OnInit, AfterViewInit {
 
  private walls: BABYLON.Mesh[] = [];
  public minDimensions = { width: 20, height: 15, depth: 20 };
- public maxDimensions = { width: 10000, height: 5000, depth: 10000 };
+ public maxDimensions = { width: 100, height: 50, depth: 100 };
  public innerBoxSize = { width: 60, height: 35, depth: 40 };
 
  private isDraggingModel = false; // Flag to track dragging state for the glbModel
@@ -93,7 +94,7 @@ export class BaseComponent  implements OnInit, AfterViewInit {
  private cameraRotationSpeed = 0.02;
  private cameraInterval: any;
 
- constructor(private ngZone: NgZone) { 
+ constructor(private ngZone: NgZone, @Inject(PLATFORM_ID) private platformId: Object) { 
   this.handleScrollBound = this.handleScroll.bind(this);
 }
 
@@ -101,9 +102,11 @@ export class BaseComponent  implements OnInit, AfterViewInit {
    // this.ngZone.runOutsideAngular(() => this.createScene());
  }
 
- ngAfterViewInit(): void {
-   this.ngZone.runOutsideAngular(() => this.createScene());
- }
+  ngAfterViewInit(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      this.ngZone.runOutsideAngular(() => this.createScene());
+    }
+  }
  //Setting Container 
  public settingsClicked: boolean = false;
  clickSettings() { this.settingsClicked = !this.settingsClicked; return; }
@@ -208,6 +211,10 @@ export class BaseComponent  implements OnInit, AfterViewInit {
  // Add to class properties
  private cameraPositionsAndAngles: { position: BABYLON.Vector3, alpha: number, beta: number }[] = [];
  createScene(): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
    const canvas = document.getElementById('renderCanvas') as HTMLCanvasElement;
    this.engine = new BABYLON.Engine(canvas, true);
    this.scene = new BABYLON.Scene(this.engine);
