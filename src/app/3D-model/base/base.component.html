@@ -172,39 +172,39 @@
       <div class="control-group">
         <h4>Rotation</h4>
         <div class="btn-grid">
-          <button (click)="rotateModel('x', 1.6)"><i class="fas fa-redo"></i> X+</button>
-          <button (click)="rotateModel('x', -1.6)"><i class="fas fa-undo"></i> X-</button>
-          <button (click)="rotateModel('y', 1.6)"><i class="fas fa-redo"></i> Y+</button>
-          <button (click)="rotateModel('y', -1.6)"><i class="fas fa-undo"></i> Y-</button>
-          <button (click)="rotateModel('z', 1.6)"><i class="fas fa-redo"></i> Z+</button>
-          <button (click)="rotateModel('z', -1.6)"><i class="fas fa-undo"></i> Z-</button>
+          <button (click)="rotateModel('x', 1)"><i class="fas fa-redo"></i> X+</button>
+          <button (click)="rotateModel('x', -1)"><i class="fas fa-undo"></i> X-</button>
+          <button (click)="rotateModel('y', 1)"><i class="fas fa-redo"></i> Y+</button>
+          <button (click)="rotateModel('y', -1)"><i class="fas fa-undo"></i> Y-</button>
+          <button (click)="rotateModel('z', 1)"><i class="fas fa-redo"></i> Z+</button>
+          <button (click)="rotateModel('z', -1)"><i class="fas fa-undo"></i> Z-</button>
         </div>
       </div>
   
       <div class="control-group">
         <h4>Position</h4>
         <div class="btn-grid">
-          <button (mousedown)="startMovePosition('x', 0.05)" (mouseup)="stopMovePosition()"
+          <button (mousedown)="startMovePosition('x', 0.01)" (mouseup)="stopMovePosition()"
             (mouseleave)="stopMovePosition()">
             <i class="fas fa-arrow-right"></i> X+
           </button>
-          <button (mousedown)="startMovePosition('x', -0.05)" (mouseup)="stopMovePosition()"
+          <button (mousedown)="startMovePosition('x', -0.01)" (mouseup)="stopMovePosition()"
             (mouseleave)="stopMovePosition()">
             <i class="fas fa-arrow-left"></i> X-
           </button>
-          <button (mousedown)="startMovePosition('y', 0.05)" (mouseup)="stopMovePosition()"
+          <button (mousedown)="startMovePosition('y', 0.01)" (mouseup)="stopMovePosition()"
             (mouseleave)="stopMovePosition()">
             <i class="fas fa-arrow-up"></i> Y+
           </button>
-          <button (mousedown)="startMovePosition('y', -0.05)" (mouseup)="stopMovePosition()"
+          <button (mousedown)="startMovePosition('y', -0.01)" (mouseup)="stopMovePosition()"
             (mouseleave)="stopMovePosition()">
             <i class="fas fa-arrow-down"></i> Y-
           </button>
-          <button (mousedown)="startMovePosition('z', 0.05)" (mouseup)="stopMovePosition()"
+          <button (mousedown)="startMovePosition('z', 0.01)" (mouseup)="stopMovePosition()"
             (mouseleave)="stopMovePosition()">
             <i class="fas fa-long-arrow-alt-right"></i> Z+
           </button>
-          <button (mousedown)="startMovePosition('z', -0.05)" (mouseup)="stopMovePosition()"
+          <button (mousedown)="startMovePosition('z', -0.01)" (mouseup)="stopMovePosition()"
             (mouseleave)="stopMovePosition()">
             <i class="fas fa-long-arrow-alt-left"></i> Z-
           </button>

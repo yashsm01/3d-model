@@ -50,8 +50,8 @@ export class BaseComponent  implements OnInit, AfterViewInit {
 
  private walls: BABYLON.Mesh[] = [];
  public minDimensions = { width: 20, height: 15, depth: 20 };
- public maxDimensions = { width: 100, height: 50, depth: 100 };
- public innerBoxSize = { width: 60, height: 35, depth: 40 };
+ public maxDimensions = { width: 1000, height: 500, depth: 1000 };
+ public innerBoxSize = { width: 600, height: 350, depth: 400 };
 
  private isDraggingModel = false; // Flag to track dragging state for the glbModel
  public selectedModels: BABYLON.AbstractMesh[] = [];
@@ -105,8 +105,19 @@ export class BaseComponent  implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     if (isPlatformBrowser(this.platformId)) {
       this.ngZone.runOutsideAngular(() => this.createScene());
+
+        // Add event listener for keyboard event
+        window.addEventListener('keydown', this.handleKeyDown.bind(this));
     }
   }
+
+  handleKeyDown(event: KeyboardEvent): void {
+    // Define the key that will trigger the function (e.g., 's' key)
+    if (event.key === 'x' || event.key === 'X') {
+      this.storeCurrentCameraPositionAndAngle();
+    }
+  }
+
  //Setting Container 
  public settingsClicked: boolean = false;
  clickSettings() { this.settingsClicked = !this.settingsClicked; return; }
@@ -210,63 +221,63 @@ export class BaseComponent  implements OnInit, AfterViewInit {
  //camera Functions  ----------------------------------------------------------------
  // Add to class properties
  private cameraPositionsAndAngles: { position: BABYLON.Vector3, alpha: number, beta: number }[] = [];
- createScene(): void {
+  createScene(): void {
     if (!isPlatformBrowser(this.platformId)) {
       return;
     }
 
-   const canvas = document.getElementById('renderCanvas') as HTMLCanvasElement;
-   this.engine = new BABYLON.Engine(canvas, true);
-   this.scene = new BABYLON.Scene(this.engine);
+    const canvas = document.getElementById('renderCanvas') as HTMLCanvasElement;
+    this.engine = new BABYLON.Engine(canvas, true);
+    this.scene = new BABYLON.Scene(this.engine);
 
-   this.scene.clearColor = new BABYLON.Color4(0.95, 0.95, 0.95, 1); // White
+    this.scene.clearColor = new BABYLON.Color4(0.95, 0.95, 0.95, 1); // White
 
-   // Setup camera
-   this.setupCamera();
+    // Setup camera
+    this.setupCamera();
 
-   // Light setup
-   const light1 = new BABYLON.HemisphericLight('Light1', new BABYLON.Vector3(0, 1, 0), this.scene);
-   const light2 = new BABYLON.PointLight('Light2', new BABYLON.Vector3(10, 10, 10), this.scene);
-   const light3 = new BABYLON.PointLight('Light3', new BABYLON.Vector3(-10, -10, -10), this.scene);
+    // Light setup
+    const light1 = new BABYLON.HemisphericLight('Light1', new BABYLON.Vector3(0, 1, 0), this.scene);
+    const light2 = new BABYLON.PointLight('Light2', new BABYLON.Vector3(10, 10, 10), this.scene);
+    const light3 = new BABYLON.PointLight('Light3', new BABYLON.Vector3(-10, -10, -10), this.scene);
 
-   // Directional light for shadows
-   const directionalLight = new BABYLON.DirectionalLight('DirectionalLight', new BABYLON.Vector3(-1, -2, -1), this.scene);
-   directionalLight.position = new BABYLON.Vector3(20, 40, 20);
-   directionalLight.intensity = 0.7;
+    // Directional light for shadows
+    const directionalLight = new BABYLON.DirectionalLight('DirectionalLight', new BABYLON.Vector3(-1, -2, -1), this.scene);
+    directionalLight.position = new BABYLON.Vector3(20, 40, 20);
+    directionalLight.intensity = 0.7;
 
-   // Shadow generator
-   this.shadowGenerator = new BABYLON.ShadowGenerator(1024, directionalLight);
-   this.shadowGenerator.useBlurExponentialShadowMap = true;
-   this.shadowGenerator.blurKernel = 32;
+    // Shadow generator
+    this.shadowGenerator = new BABYLON.ShadowGenerator(1024, directionalLight);
+    this.shadowGenerator.useBlurExponentialShadowMap = true;
+    this.shadowGenerator.blurKernel = 32;
 
-   // Highlight layer
-   this.highlightLayer = new BABYLON.HighlightLayer("highlightLayer", this.scene);
+    // Highlight layer
+    this.highlightLayer = new BABYLON.HighlightLayer("highlightLayer", this.scene);
 
-   // Log camera angles
-   this.logCameraAngles();
+    // Log camera angles
+    this.logCameraAngles();
 
-   // Create walls and box
-   this.createWalls();
+    // Create walls and box
+    this.createWalls();
 
-   // Setup pointer controls
-   this.setupPointerControls();
+    // Setup pointer controls
+    this.setupPointerControls();
 
-   // Create advanced dynamic texture for GUI
-   this.advancedTexture = GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+    // Create advanced dynamic texture for GUI
+    this.advancedTexture = GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
 
-   // Run the render loop
-   this.engine.runRenderLoop(() => this.scene.render());
+    // Run the render loop
+    this.engine.runRenderLoop(() => this.scene.render());
 
-   // Create model tooltip
-   this.createModelTooltip();
+    // Create model tooltip
+    this.createModelTooltip();
 
-   // Resize engine on window resize
-   window.addEventListener('resize', () => this.engine.resize());
+    // Resize engine on window resize
+    window.addEventListener('resize', () => this.engine.resize());
 
-   // Create axes and floor
-   // this.createAxes(10);
-   // this.createFloor();
- }
+    // Create axes and floor
+    // this.createAxes(10);
+    // this.createFloor();
+  }
 
  //Auto Zoom OF Camera as per wall size Chnage
  updateCameraPosition(): void {
@@ -292,7 +303,7 @@ export class BaseComponent  implements OnInit, AfterViewInit {
      this.camera.beta = optimalBeta;
 
      // Set camera limits
-     this.camera.lowerRadiusLimit = maxDimension * 0.5;
+     this.camera.lowerRadiusLimit = 1;
      this.camera.upperRadiusLimit = maxDimension * 3;
 
      // Update camera target to center of box
@@ -364,7 +375,8 @@ export class BaseComponent  implements OnInit, AfterViewInit {
 
   zoomIn() {
     if (this.camera instanceof BABYLON.ArcRotateCamera) {
-      this.camera.radius = Math.max(this.camera.radius - 5, this.camera.lowerRadiusLimit ?? 0);
+      const minRadius = 1; // Set a minimum radius to prevent zooming to zero or negative values
+      this.camera.radius = Math.max(this.camera.radius - 5, this.camera.lowerRadiusLimit ?? minRadius);
     } else if (this.camera instanceof BABYLON.UniversalCamera) {
       this.camera.position.z += 5;
     }
@@ -410,25 +422,25 @@ export class BaseComponent  implements OnInit, AfterViewInit {
    });
  }
 
- storeCurrentCameraPositionAndAngle(): void {
-   if (this.camera instanceof BABYLON.ArcRotateCamera) {
-     this.cameraPositionsAndAngles.push({
-       position: this.camera.position.clone(),
-       alpha: this.camera.alpha,
-       beta: this.camera.beta
-     });
-     console.log('Camera position and angle stored:', this.cameraPositionsAndAngles);
-   } else if (this.camera instanceof BABYLON.UniversalCamera) {
-     this.cameraPositionsAndAngles.push({
-       position: this.camera.position.clone(),
-       alpha: 0, // UniversalCamera does not have alpha and beta
-       beta: 0
-     });
-     console.log('Camera position stored:', {
-       position: this.camera.position.clone()
-     });
-   }
- }
+  storeCurrentCameraPositionAndAngle(): void {
+    if (this.camera instanceof BABYLON.ArcRotateCamera) {
+      this.cameraPositionsAndAngles.push({
+        position: this.camera.position.clone(),
+        alpha: this.camera.alpha,
+        beta: this.camera.beta
+      });
+      console.log('Camera position and angle stored:', this.cameraPositionsAndAngles);
+    } else if (this.camera instanceof BABYLON.UniversalCamera) {
+      this.cameraPositionsAndAngles.push({
+        position: this.camera.position.clone(),
+        alpha: 0, // UniversalCamera does not have alpha and beta
+        beta: 0
+      });
+      console.log('Camera position stored:', {
+        position: this.camera.position.clone()
+      });
+    }
+  }
  //End Camera Controllers ----------------------------------------------------------------
  //Wall Functions ----------------------------------------------------------------
 
@@ -954,13 +966,20 @@ export class BaseComponent  implements OnInit, AfterViewInit {
    }
  }
 
- startMovePosition(axis: string, amount: number) {
-   this.moveInterval = setInterval(() => this.movePosition(axis, amount), 10);
- }
+  startMovePosition(axis: string, initialAmount: number) {
+    let amount = initialAmount;
+    this.moveInterval = setInterval(() => {
+      this.movePosition(axis, amount);
+      amount += initialAmount; // Increase the amount over time
+    }, 10);
+  }
 
- stopMovePosition() {
-   clearInterval(this.moveInterval);
- }
+  stopMovePosition() {
+    if (this.moveInterval) {
+      clearInterval(this.moveInterval);
+      this.moveInterval = null;
+    }
+  }
 
  private isWithinBounds(position: BABYLON.Vector3): boolean {
    const halfWidth = (this.innerBoxSize.width / 2) - this.WALL_MARGIN;
@@ -987,16 +1006,16 @@ export class BaseComponent  implements OnInit, AfterViewInit {
    }
 
    const rotationQuaternion = this.selectedModel.rotationQuaternion;
-
+   const rotationAmount = BABYLON.Tools.ToRadians(90) * amount;
    switch (axis) {
      case 'x':
-       rotationQuaternion.multiplyInPlace(BABYLON.Quaternion.RotationAxis(BABYLON.Axis.X, amount));
+       rotationQuaternion.multiplyInPlace(BABYLON.Quaternion.RotationAxis(BABYLON.Axis.X, rotationAmount));
        break;
      case 'y':
-       rotationQuaternion.multiplyInPlace(BABYLON.Quaternion.RotationAxis(BABYLON.Axis.Y, amount));
+       rotationQuaternion.multiplyInPlace(BABYLON.Quaternion.RotationAxis(BABYLON.Axis.Y, rotationAmount));
        break;
      case 'z':
-       rotationQuaternion.multiplyInPlace(BABYLON.Quaternion.RotationAxis(BABYLON.Axis.Z, amount));
+       rotationQuaternion.multiplyInPlace(BABYLON.Quaternion.RotationAxis(BABYLON.Axis.Z, rotationAmount));
        break;
    }
 
