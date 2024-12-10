@@ -4,6 +4,13 @@ import * as BABYLON from '@babylonjs/core';
 import "@babylonjs/loaders";
 import * as GUI from '@babylonjs/gui/2D';
 
+
+declare module '@babylonjs/core/Meshes/abstractMesh' {
+  interface AbstractMesh {
+    isMovable?: boolean;
+  }
+}
+
 interface DefaultModelSize {
   x: number;
   y: number;
@@ -108,6 +115,7 @@ export class BaseComponent  implements OnInit, AfterViewInit {
 
         // Add event listener for keyboard event
         window.addEventListener('keydown', this.handleKeyDown.bind(this));
+        window.addEventListener('keyup', this.handleKeyUp.bind(this));
     }
   }
 
@@ -115,6 +123,31 @@ export class BaseComponent  implements OnInit, AfterViewInit {
     // Define the key that will trigger the function (e.g., 's' key)
     if (event.key === 'x' || event.key === 'X') {
       this.storeCurrentCameraPositionAndAngle();
+    }
+    if (event.key === 'm' || event.key === 'M') {
+      this.toggleModelMovement(this.isModelMovementEnabled);
+    }
+    console.log('Key pressed:', event.key);
+    // Example for starting model movement
+    // if (event.key === 'ArrowUp') {
+    //   this.startMovePosition('y', 0.01);
+    // } else if (event.key === 'ArrowDown') {
+    //   this.startMovePosition('y', -0.01);
+    // } else if (event.key === 'ArrowLeft') {
+    //   this.startMovePosition('x', -0.01);
+    // } else if (event.key === 'ArrowRight') {
+    //   this.startMovePosition('x', 0.01);
+    // } else if (event.key === 'PageUp') {
+    //   this.startMovePosition('z',  0.01);
+    // } else if (event.key === 'PageDown') {
+    //   this.startMovePosition('z', - 0.01);
+    // }
+  }
+
+  handleKeyUp(event: KeyboardEvent): void {
+    // Stop model movement on key release
+    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'PageUp', 'PageDown'].includes(event.key)) {
+      this.stopMovePosition();
     }
   }
 
@@ -550,7 +583,7 @@ export class BaseComponent  implements OnInit, AfterViewInit {
          // Check if a model is clicked
          if (this.isModelClicked(pointerInfo)) {
            this.isDraggingModel = true;
-           if (this.isModelMovementEnabled) this.disableCameraRotation();
+           if (this.isModelMovementEnabled || this.selectedModel!.isMovable) this.disableCameraRotation();
            this.applyOutlineEffect(true);
            this.addToSelectedModels(this.selectedModel!);
            this.openUrlModel(this.selectedModel!);
@@ -780,7 +813,7 @@ export class BaseComponent  implements OnInit, AfterViewInit {
            resolve(null);
            return;
          }
-
+         glbModel.isMovable = false;
          this.glbModels.push(glbModel);
 
          // Add event listener for click event
@@ -870,45 +903,45 @@ export class BaseComponent  implements OnInit, AfterViewInit {
    }
    return false;
  }
- moveModel(event: PointerEvent): void {
-   if (this.selectedModel) {
-     const pickInfo = this.scene.pick(event.clientX, event.clientY, undefined, false);
-     if (pickInfo.hit) {
-       const cursorWorldPosition = pickInfo.pickedPoint!;
+  moveModel(event: PointerEvent): void {
+    if (this.selectedModel && this.selectedModel.isMovable) {
+      const pickInfo = this.scene.pick(event.clientX, event.clientY, undefined, false);
+      if (pickInfo.hit) {
+        const cursorWorldPosition = pickInfo.pickedPoint!;
 
-       // Get the bounding box of the model
-       const boundingInfo = this.selectedModel.getBoundingInfo();
-       const min = boundingInfo.boundingBox.minimumWorld;
-       const max = boundingInfo.boundingBox.maximumWorld;
+        // Get the bounding box of the model
+        const boundingInfo = this.selectedModel.getBoundingInfo();
+        const min = boundingInfo.boundingBox.minimumWorld;
+        const max = boundingInfo.boundingBox.maximumWorld;
 
-       // Calculate the model's size
-       this.modelSizeX = max.x - min.x;
-       this.modelSizeY = max.y - min.y;
-       this.modelSizeZ = max.z - min.z;
+        // Calculate the model's size
+        this.modelSizeX = max.x - min.x;
+        this.modelSizeY = max.y - min.y;
+        this.modelSizeZ = max.z - min.z;
 
-       // Update the position
-       this.selectedModel.position.x = cursorWorldPosition.x;
-       this.selectedModel.position.y = cursorWorldPosition.y;
-       this.selectedModel.position.z = cursorWorldPosition.z;
+        // Update the position
+        this.selectedModel.position.x = cursorWorldPosition.x;
+        this.selectedModel.position.y = cursorWorldPosition.y;
+        this.selectedModel.position.z = cursorWorldPosition.z;
 
-       this.clampModel();
+        this.clampModel();
 
-       // Check for collisions with other models
-       for (const model of this.glbModels) {
-         if (model !== this.selectedModel && this.checkCollision(this.selectedModel, model)) {
-           // Handle collision (e.g., revert position)
-           this.selectedModel.position.x = cursorWorldPosition.x;
-           this.selectedModel.position.y = cursorWorldPosition.y;
-           this.selectedModel.position.z = cursorWorldPosition.z;
-         }
-       }
+        // Check for collisions with other models
+        for (const model of this.glbModels) {
+          if (model !== this.selectedModel && this.checkCollision(this.selectedModel, model)) {
+            // Handle collision (e.g., revert position)
+            this.selectedModel.position.x = cursorWorldPosition.x;
+            this.selectedModel.position.y = cursorWorldPosition.y;
+            this.selectedModel.position.z = cursorWorldPosition.z;
+          }
+        }
 
-       // Update distance lines and texts
-       this.updateDistanceLinesAndTexts();
-       this.showTooltip(this.selectedModel);
-     }
-   }
- }
+        // Update distance lines and texts
+        this.updateDistanceLinesAndTexts();
+        this.showTooltip(this.selectedModel);
+      }
+    }
+  }
 
  zoomInOnModel(): void {
    if (!this.selectedModel || !(this.camera instanceof BABYLON.ArcRotateCamera)) return;
@@ -942,34 +975,37 @@ export class BaseComponent  implements OnInit, AfterViewInit {
    this.scene.beginAnimation(this.camera, 0, 30, false);
  }
 
- movePosition(axis: string, amount: number) {
-   if (!this.selectedModel) return;
+  movePosition(axis: string, amount: number) {
+    this.selectedModels.forEach(model => {
+      if (model.isMovable && this.isModelMovementEnabled) {
+        const newPosition = model.position.clone();
 
-   const newPosition = this.selectedModel.position.clone();
+        switch (axis) {
+          case 'x':
+            newPosition.x += amount;
+            break;
+          case 'y':
+            newPosition.y += amount;
+            break;
+          case 'z':
+            newPosition.z += amount;
+            break;
+        }
 
-   switch (axis) {
-     case 'x':
-       newPosition.x += amount;
-       break;
-     case 'y':
-       newPosition.y += amount;
-       break;
-     case 'z':
-       newPosition.z += amount;
-       break;
-   }
-
-   // Check boundaries before applying movement
-   if (this.isWithinBounds(newPosition)) {
-     this.selectedModel.position = newPosition;
-     this.updateDistanceLinesAndTexts();
-   }
- }
+        // Check boundaries before applying movement
+        if (this.isWithinBounds(newPosition)) {
+          model.position = newPosition;
+          this.updateDistanceLinesAndTexts();
+        }
+      }
+    });
+  }
 
   startMovePosition(axis: string, initialAmount: number) {
     let amount = initialAmount;
     this.moveInterval = setInterval(() => {
       this.movePosition(axis, amount);
+      console.log('Moving');
       amount += initialAmount; // Increase the amount over time
     }, 10);
   }
@@ -977,6 +1013,7 @@ export class BaseComponent  implements OnInit, AfterViewInit {
   stopMovePosition() {
     if (this.moveInterval) {
       clearInterval(this.moveInterval);
+      console.log('Stopped moving');
       this.moveInterval = null;
     }
   }
@@ -1503,7 +1540,7 @@ export class BaseComponent  implements OnInit, AfterViewInit {
      const animationAlpha = new BABYLON.Animation(
        "cameraAlphaAnimation",
        "alpha",
-       30,
+       300,
        BABYLON.Animation.ANIMATIONTYPE_FLOAT,
        BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT
      );
@@ -1518,7 +1555,7 @@ export class BaseComponent  implements OnInit, AfterViewInit {
      const animationBeta = new BABYLON.Animation(
        "cameraBetaAnimation",
        "beta",
-       30,
+       300,
        BABYLON.Animation.ANIMATIONTYPE_FLOAT,
        BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT
      );

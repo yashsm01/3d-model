@@ -234,7 +234,7 @@
       <ul class="selected-models-list">
         <li *ngFor="let model of selectedModels" (click)="selectModelFromList(model)"
           [class.active]="model === selectedModel">
-          <i class="fas fa-cube"></i> {{ model.name }}
+          <input type="checkbox" [(ngModel)]="model.isMovable" /> {{ model.name }}
           <button class="camera-btn zoom-in" title="Zoom In" (click)="selectModelFromListZoomIn(model)">
             <i class="fas fa-search-plus"></i>
           </button>
