@@ -1,6 +1,6 @@
 <div class="container-fluid">
     <canvas id="renderCanvas"></canvas>
-  
+
     <!-- camara possion add -->
     <div class="camera-position-container">
       <button class="settings-btn" (click)="storeCurrentCameraPositionAndAngle()">
@@ -84,7 +84,7 @@
         </div>
       </div>
     </div>
-  
+
     <!-- Box Dimensions Controls -->
     <div id="dimensionControls" class="info-box dimension-controls" [class.expanded]="isDimensionsExpanded"
       (mouseenter)="isDimensionsExpanded = true" (mouseleave)="isDimensionsExpanded = false" *ngIf="!isViewMode">
@@ -110,10 +110,10 @@
         </div>
       </div>
     </div>
-  
+
     <!-- Camera Info -->
     <div id="cameraInfo" class="info-box" *ngIf="!isViewMode"></div>
-  
+
     <!-- Model List -->
     <div id="modelList" class="info-box model-list" *ngIf="!isViewMode">
       <div class="list-header">
@@ -128,15 +128,48 @@
         </li>
       </ul>
     </div>
-  
+
+    <div class="camera-settings" *ngIf="!isViewMode">
+      <h3>Camera Settings</h3>
+      <div class="input-group">
+        <label for="cameraX">X:</label>
+        <input type="number" id="cameraX" [(ngModel)]="cameraX">
+      </div>
+      <div class="input-group">
+        <label for="cameraY">Y:</label>
+        <input type="number" id="cameraY" [(ngModel)]="cameraY">
+      </div>
+      <div class="input-group">
+        <label for="cameraZ">Z:</label>
+        <input type="number" id="cameraZ" [(ngModel)]="cameraZ">
+      </div>
+      <div class="input-group">
+        <label for="cameraAlpha">Alpha:</label>
+        <input type="number" id="cameraAlpha" [(ngModel)]="cameraAlpha">
+      </div>
+      <div class="input-group">
+        <label for="cameraBeta">Beta:</label>
+        <input type="number" id="cameraBeta" [(ngModel)]="cameraBeta">
+      </div>
+      <div class="input-group">
+        <label for="cameraRadius">Radius:</label>
+        <input type="number" id="cameraRadius" [(ngModel)]="cameraRadius">
+      </div>
+      <div class="input-group">
+        <button class="mr-1" (click)="applyCameraSettings()">Apply</button>
+        <button (click)="syncCameraSetting()">sync</button>
+      </div>
+
+    </div>
+
     <!-- Camera Controls -->
-    <div id="cameraControls" class="camera-controls info-box" *ngIf="!isViewMode">
+    <div id="cameraControls" class="camera-controls info-box" *ngIf="!isViewMode && false">
       <div class="control-grid">
         <button class="camera-btn zoom-in" title="Zoom In" (mousedown)="startCameraMove('zoomIn')"
           (mouseup)="stopCameraMove()" (mouseleave)="stopCameraMove()">
           <i class="fas fa-search-plus"></i>
         </button>
-  
+
         <div class="orbit-controls">
           <button class="camera-btn" title="Rotate Left" (mousedown)="startCameraMove('left')"
             (mouseup)="stopCameraMove()" (mouseleave)="stopCameraMove()">
@@ -158,14 +191,14 @@
             <i class="fas fa-redo"></i>
           </button>
         </div>
-  
+
         <button class="camera-btn zoom-out" title="Zoom Out" (mousedown)="startCameraMove('zoomOut')"
           (mouseup)="stopCameraMove()" (mouseleave)="stopCameraMove()">
           <i class="fas fa-search-minus"></i>
         </button>
       </div>
     </div>
-  
+
     <!-- Model Controls -->
     <div id="modelControls" class="info-box" *ngIf="!isViewMode">
       <h3>Model Controls</h3>
@@ -180,7 +213,7 @@
           <button (click)="rotateModel('z', -1)"><i class="fas fa-undo"></i> Z-</button>
         </div>
       </div>
-  
+
       <div class="control-group">
         <h4>Position</h4>
         <div class="btn-grid">
@@ -227,7 +260,7 @@
         </button>
       </div>
     </div>
-  
+
     <!-- Selected Models List -->
     <div id="selectedModels" class="info-box" *ngIf="!isViewMode">
       <h3>Selected Models</h3>
