@@ -1,0 +1,670 @@
+/* Base Styles */
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  background-color: #f0f0f0;
+}
+
+/* Container and Canvas */
+.container-fluid {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+#renderCanvas {
+  width: 100%;
+  height: 100vh;
+  display: block;
+  touch-action: none;
+  background-color: #f0f0f0;
+}
+
+.camera-position-container{
+  position: absolute;
+  top: 10px;
+  right: 50px;
+  z-index: 1000;
+}
+/* Settings Container */
+.settings-container {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 1000;
+}
+
+.settings-btn {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.settings-btn:hover {
+  background-color: #45a049;
+}
+
+/* Control Panel */
+.control-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  position: absolute;
+  top: 50px;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.73);
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.control-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.control-group span {
+  font-size: 12px;
+  color: white;
+}
+
+.control-group button {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.control-group button:hover {
+  background-color: #45a049;
+}
+
+.control-group .switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 20px;
+}
+
+.control-group .switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.control-group .slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: 20px;
+}
+
+.control-group .slider:before {
+  position: absolute;
+  content: "";
+  height: 14px;
+  width: 14px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+.control-group input:checked + .slider {
+  background-color: #4caf50;
+}
+
+.control-group input:checked + .slider:before {
+  transform: translateX(20px);
+}
+
+.control-group .slider.round {
+  border-radius: 20px;
+}
+
+.control-group .slider.round:before {
+  border-radius: 50%;
+}
+
+/* Common Box Styles */
+.info-box {
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.73);
+  color: white;
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Typography */
+h3 {
+  margin: 0 0 15px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+h4 {
+  margin: 10px 0;
+  font-size: 14px;
+  color: #ccc;
+}
+
+/* Dimension Controls */
+.dimension-controls {
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 300px;
+  z-index: 10;
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.dimension-controls:not(.expanded) {
+  height: 50px;
+  cursor: pointer;
+}
+
+.dimension-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 10px;
+}
+
+.dimension-header i {
+  transition: transform 0.3s ease;
+}
+
+.dimension-controls.expanded .dimension-header i {
+  transform: rotate(180deg);
+}
+
+.dimension-content {
+  transition: all 0.3s ease;
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+}
+
+.dimension-controls.expanded .dimension-content {
+  opacity: 1;
+  max-height: 300px;
+}
+
+.slider-container {
+  margin: 15px 0;
+}
+
+.slider-container label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Range Input Styling */
+input[type="range"] {
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.1);
+  outline: none;
+  -webkit-appearance: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #4caf50;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.1);
+}
+
+/* Model List */
+.model-list {
+  top: 110px;
+  right: 20px;
+  width: 240px;
+  padding: 0;
+  z-index: 20;
+  max-height: 250px; /* Set a maximum height */
+  overflow-y: auto; /* Enable vertical scrolling */
+}
+
+.list-header {
+  padding: 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.simple-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.simple-list li {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.simple-list button {
+  width: 100%;
+  padding: 12px 15px;
+  background: transparent;
+  border: none;
+  color: white;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.2s ease;
+}
+
+.simple-list button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.simple-list button i {
+  font-size: 16px;
+  color: #4caf50;
+  width: 20px;
+  text-align: center;
+}
+
+/* Scrollbar Styling */
+.model-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.model-list::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 3px;
+}
+
+.model-list::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+.model-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Camera Controls */
+.camera-controls {
+  bottom: 20px;
+  right: 20px;
+  padding: 15px;
+  z-index: 30;
+}
+
+.control-grid {
+  display: grid;
+  grid-template-rows: auto auto auto;
+  gap: 10px;
+  align-items: center;
+  justify-items: center;
+}
+
+.orbit-controls {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.camera-btn {
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 8px;
+  background: rgba(60, 60, 60, 0.6);
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.camera-btn:hover {
+  background: rgba(70, 70, 70, 0.8);
+  transform: translateY(-2px);
+}
+
+.camera-btn.reset {
+  background: rgba(80, 80, 80, 0.6);
+}
+
+.camera-btn.zoom-in,
+.camera-btn.zoom-out {
+  background: rgba(70, 130, 180, 0.6);
+}
+
+/* Toggle Switch */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: 34px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #4caf50;
+}
+
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+.btn-grid button {
+  background-color: rgba(76, 175, 80, 0.6);
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  transition: all 0.2s ease;
+}
+
+.btn-grid button:hover {
+  background-color: rgba(76, 175, 80, 0.8);
+  transform: translateY(-2px);
+}
+
+/* Model Controls */
+#modelControls {
+  top: 200px;
+  left: 20px;
+  z-index: 20;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.control-group {
+  margin-bottom: 15px;
+}
+
+.btn-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+button {
+  background-color: rgba(76, 175, 80, 0.6);
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  transition: all 0.2s ease;
+}
+
+button:hover {
+  background-color: rgba(76, 175, 80, 0.8);
+  transform: translateY(-2px);
+}
+
+.delete-btn {
+  width: 100%;
+  background-color: rgba(244, 67, 54, 0.6);
+}
+
+.delete-btn:hover {
+  background-color: rgba(244, 67, 54, 0.8);
+}
+
+/* export/import models */
+.export-btn,
+.import-btn {
+  background-color: rgba(33, 150, 243, 0.6);
+  width: 100%;
+}
+
+.toggle-btn {
+  background-color: rgba(255, 193, 7, 0.6);
+  width: 100%;
+}
+
+.toggle-btn:hover {
+  background-color: rgba(255, 193, 7, 0.8);
+}
+
+/* Selected Models */
+#selectedModels {
+  top: 365px;
+  right: 20px;
+  max-height: 250px;
+  overflow-y: auto;
+  z-index: 15;
+}
+
+.selected-models-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.selected-models-list li {
+  padding: 10px;
+  margin: 4px 0;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.selected-models-list li:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.selected-models-list li.active {
+  background-color: rgba(76, 175, 80, 0.3);
+}
+
+/* Camera Info */
+#cameraInfo {
+  padding: 10px;
+  top: 20px;
+  left: 20px;
+  width: 240px;
+  z-index: 20;
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Tooltip Styles */
+.babylon-tooltip {
+  pointer-events: none;
+  border-radius: 4px;
+  padding: 8px;
+  background-color: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  z-index: 1000;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .info-box {
+    padding: 10px;
+  }
+
+  .camera-btn {
+    width: 35px;
+    height: 35px;
+  }
+
+  #dimensionControls {
+    min-width: 250px;
+  }
+
+  .model-list {
+    width: 200px;
+  }
+}
+
+
+.camera-settings {
+  position: absolute;
+  top: 480px;
+  left: 20px;
+  z-index: 1000;
+  background-color: rgba(0, 0, 0, 0.73);
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 20px;
+}
+
+.camera-settings h3 {
+  margin-bottom: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.input-group {
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.input-group label {
+  display: inline-block;
+  width: 50px;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.input-group input {
+  width: 100px;
+  padding: 5px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.camera-settings button {
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.camera-settings button:hover {
+  background-color: #0056b3;
+  transform: translateY(-2px);
+}

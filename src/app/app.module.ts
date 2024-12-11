@@ -14,9 +14,10 @@ import {
   provideHttpClient,
   withInterceptorsFromDi,
 } from '@angular/common/http';
+import { ShowComponent } from './3D-model/show/show.component';
 
 @NgModule({
-  declarations: [AppComponent, BaseComponent],
+  declarations: [AppComponent, BaseComponent, ShowComponent],
   imports: [BrowserModule, AppRoutingModule, RouterModule, FormsModule],
   providers: [
     provideHttpClient(withInterceptorsFromDi()),

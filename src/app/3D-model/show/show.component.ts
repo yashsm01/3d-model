@@ -26,11 +26,11 @@ interface DefaultModelSize {
 }
 
 @Component({
-  selector: 'app-base',
-  templateUrl: './base.component.html',
-  styleUrl: './base.component.css',
+  selector: 'app-show',
+  templateUrl: './show.component.html',
+  styleUrl: './show.component.css',
 })
-export class BaseComponent implements OnInit, AfterViewInit {
+export class ShowComponent implements OnInit, AfterViewInit {
   // Add to class properties
   public isViewMode: boolean = false;
 
